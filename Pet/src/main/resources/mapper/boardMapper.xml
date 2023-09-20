@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	
+	<!-- 게시판 글 작성 -->
+   <insert id="insert">
+	   INSERT INTO TB_BOARD(    bno
+	   					      , TITLE 
+	   					      , CONTENT 
+	   					      , WRITER  )
+	                 VALUES(    #{bno}
+	                 		  , #{title}
+	                 		  , #{content}
+	                 		  , #{writer}  )
+   
+   </insert>
+   
+   <select id="listPage" resultType="com.spring.pet.dto.BoardDto" parameterType="com.spring.pet.dto.Criteria">
+		SELECT bno, 
+		       TITLE, 
+		       CONTENT, 
+		       WRITER, 
+		       REGDATE,
+		       HIT
+		FROM (
+		    SELECT bno, 
+		           TITLE, 
+		           CONTENT, 
+		           WRITER, 
+		           REGDATE, 
+		           HIT,
+		           @rownum := @rownum + 1 AS RNUM
+		    FROM TB_BOARD, (SELECT @rownum := 0) R
+		    WHERE 1=1 
+		        <include refid="search"></include>
+		    ORDER BY bno DESC
+		) AS TB
+		WHERE RNUM BETWEEN #{rowStart} AND #{rowEnd}
+		ORDER BY bno DESC
+	</select>
+	
+	<select id="listCount" parameterType="com.spring.pet.dto.SearchCriteria" resultType="int">
+		SELECT COUNT(bno)
+		   FROM TB_BOARD
+		   WHERE 1=1
+		<include refid="search"></include>	
+		   AND bno > 0
+	</select>
+	
+	<sql id="search">
+		<if test="searchType != null">
+			<if test="searchType == 't'.toString()">AND TITLE LIKE CONCAT('%', #{keyword}, '%')</if>
+			<if test="searchType == 'c'.toString()">AND CONTENT LIKE CONCAT('%', #{keyword}, '%')</if>
+			<if test="searchType == 'w'.toString()">AND WRITER LIKE CONCAT('%', #{keyword}, '%')</if>
+			<if test="searchType == 'tc'.toString()">AND (TITLE LIKE CONCAT('%', #{keyword}, '%') OR CONTENT LIKE CONCAT('%', #{keyword}, '%'))</if>
+		</if>
+	</sql>
+	
+	<select id="read" parameterType="int" resultType="com.spring.pet.dto.BoardDto">
+		SELECT	bno
+			  , TITLE
+			  , CONTENT
+			  , WRITER
+			  , REGDATE
+		 FROM TB_BOARD
+		 WHERE bno = #{bno}
+	</select>
+	
+	<update id="update" parameterType="com.spring.pet.dto.BoardDto">
+		UPDATE TB_BOARD
+		   SET TITLE    =   #{title},
+		   	   CONTENT  =   #{content}
+		 WHERE bno = #{bno} 
+	</update>
+	
+	<delete id="delete" parameterType="int">
+		DELETE 
+		  FROM TB_BOARD
+		 WHERE bno = #{bno}
+	</delete>
+	
+	<!-- 게시판 조회수 -->
+    <update id="boardHit" parameterType="int">
+    	UPDATE TB_BOARD SET
+    	HIT = IFNULL(HIT, 0) + 1
+    	WHERE bno = #{bno}
+    </update>
+	
+	
+</mapper>

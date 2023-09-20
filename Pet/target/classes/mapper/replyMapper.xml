@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="reply">
+
+	<!-- 댓글 조회 -->
+	<select id="readReply" resultType="com.spring.pet.dto.ReplyDto">
+    	SELECT
+    		  RNO, CONTENT, WRITER, REGDATE
+    	 FROM TB_REPLY
+    	WHERE bno = #{bno}
+	</select>
+	
+	<!-- 댓글 작성 -->
+	<insert id="writeReply">
+		INSERT INTO TB_REPLY(
+			bno
+			, RNO
+			, CONTENT
+			, WRITER
+		)
+		VALUES(    #{bno}
+			, #{rno}
+			, #{content}
+			, #{writer}	)
+	</insert>
+	
+	<!-- 댓글 수정 -->
+	<update id="updateReply" parameterType="com.spring.pet.dto.ReplyDto">
+		UPDATE TB_REPLY SET CONTENT = #{content}
+		WHERE rno = #{rno}
+	</update>
+
+	<!-- 댓글 삭제 -->
+	<delete id="deleteReply" parameterType="com.spring.pet.dto.ReplyDto">
+		DELETE FROM TB_REPLY
+		WHERE rno = #{rno}
+	</delete>
+	
+	<!-- 선택된 댓글 조회 -->
+	<!-- 선택된 댓글 조회쿼리는 댓글 번호를 파라미터로 받아 그 번호에 해당하는 댓글을 수정하거나 삭제하기 위함. -->
+	<select id="selectReply" resultType="com.spring.pet.dto.ReplyDto">
+		SELECT
+				bno
+			  , rno
+			  , CONTENT
+			  , WRITER
+			  , REGDATE
+		  FROM TB_REPLY
+		 WHERE rno = #{rno}
+	</select>
+
+</mapper>

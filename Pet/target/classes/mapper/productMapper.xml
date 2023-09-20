@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="product">
+	
+	<!-- 상품리스트 -->
+	<select id="list" resultType="com.spring.pet.dto.ProductDto">
+		SELECT * FROM TB_PRODUCT ORDER BY regDate DESC
+	</select>
+	
+	<select id="newProductList" resultType="com.spring.pet.dto.ProductDto">
+		SELECT productId, productName, price, stock, productDist, productInfo, fullname, regDate, updateDate
+		FROM TB_PRODUCT
+		ORDER BY regDate DESC;
+	</select>
+	
+	<!-- 관리자 상품정보 확인 -->
+	<select id="read" resultType="com.spring.pet.dto.ProductDto">
+		SELECT * FROM TB_PRODUCT WHERE productId = #{productId}
+	</select>
+	
+	<select id="getFilename" resultType="string">
+		SELECT fullname
+		FROM TB_ATTACH
+		WHERE productId = #{productId}
+		ORDER BY id
+		LIMIT 1;
+	</select>
+	
+	<!-- 상품수정 -->
+	<update id="update">
+		UPDATE TB_PRODUCT SET productName = #{productName}, price = #{price}, productDist = #{productDist},
+		stock = #{stock}, productInfo = #{productInfo}, updateDate = SYSDATE() 
+		WHERE productId = #{productId}
+	</update>
+	
+	<delete id="deleteFilesByBno">
+		DELETE FROM TB_ATTACH WHERE productId = #{productId}
+	</delete>
+	
+	<insert id="addAttach">
+	    INSERT INTO TB_ATTACH (id, fullname, productId) 
+	    SELECT IFNULL(MAX(id) + 1, 1), #{fullname}, #{productId}
+	    FROM TB_ATTACH;
+	</insert>
+	
+	<select id="getAttaches" resultType="string">
+		SELECT fullname FROM TB_ATTACH WHERE productId = #{productId} ORDER BY regDate ASC
+	</select>
+	
+	<delete id="deleteFile">
+		DELETE FROM TB_ATTACH WHERE fullname = #{filename}
+	</delete>
+	
+	<!-- 상품삭제 -->
+	<delete id="delete">
+		DELETE FROM TB_PRODUCT WHERE productId = #{productId}
+	</delete>
+	
+	<!-- 상품등록 -->
+	<insert id="insert">
+		INSERT INTO TB_PRODUCT (productId, productName, price, stock, productDist, productInfo, fullname, regDate, updateDate)
+		VALUES (#{productId}, #{productName}, #{price}, #{stock}, #{productDist}, #{productInfo}, #{filename}, SYSDATE(), SYSDATE())
+	</insert>
+	
+	<update id="minusProductStock">
+		UPDATE TB_PRODUCT SET stock = stock - #{order_Qty} WHERE productId = #{productId}
+	</update>
+
+	<update id="plusSoldRate">
+		UPDATE TB_PRODUCT SET sold_rate = sold_rate + #{order_Qty} WHERE productId = #{productId}
+	</update>
+	
+	<update id="plusProductStock">
+		UPDATE TB_PRODUCT SET stock = stock + #{order_Qty} WHERE productId = #{productId}
+	</update>
+
+	<update id="minusSoldRate">
+		UPDATE TB_PRODUCT SET sold_rate = sold_rate - #{order_Qty} WHERE productId = #{productId}
+	</update>
+
+
+</mapper>

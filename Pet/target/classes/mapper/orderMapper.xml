@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="order">
+
+	<insert id="insert">
+	    INSERT INTO TB_SETORDER (orderId, productId, productName, price, order_Qty, productDist,
+	        selected_Opt, fullname, userId, username, email, tel, useraddress, postcode,
+	        deliver_msg, deliver_situ, totalAmount, cal_info)
+	    VALUES (#{orderId}, #{productId}, #{productName}, #{price}, #{order_Qty}, #{productDist},
+	        #{selected_Opt}, #{fullname}, #{userId}, #{username}, #{email}, #{tel}, #{useraddress},
+	        #{postcode}, #{deliver_msg}, #{deliver_situ}, #{totalAmount}, #{cal_info})
+	</insert>
+	
+	<delete id="delFromCart">
+		DELETE FROM TB_CART WHERE userId = #{userId} AND productId = #{productId}
+	</delete>
+	
+	<select id="countOrderId" resultType="int">
+    	SELECT IFNULL(MAX(orderId) + 1, 1) FROM TB_SETORDER
+	</select>
+	
+	<select id="myOrderList" resultType="com.spring.pet.dto.OrderDto">
+		SELECT * FROM TB_SETORDER WHERE userId = #{userId}
+	</select>
+	
+	<delete id="orderCancel">
+		DELETE FROM TB_SETORDER WHERE orderId = #{orderId}
+	</delete>
+	
+	<select id="selectByOrderId" resultType="com.spring.pet.dto.OrderDto">
+		SELECT * FROM TB_SETORDER WHERE orderId = #{orderId} ORDER BY orderDate DESC
+	</select>
+	
+	<select id="list" resultType="com.spring.pet.dto.OrderDto">
+		SELECT * FROM TB_SETORDER WHERE orderId ORDER BY orderDate DESC
+	</select>
+	
+	<update id="updateDelSitu">
+		UPDATE TB_SETORDER SET deliver_situ = #{deliver_situ} 
+		WHERE orderId = #{orderId}
+	</update>
+	
+
+
+</mapper>

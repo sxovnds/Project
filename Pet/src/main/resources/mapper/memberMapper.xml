@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="member">
+	<!-- 회원가입 -->
+	<insert id="register">
+	    INSERT INTO TB_MEMBER(   USERID 
+	   					       , USERPASS 
+	   					       , USERNAME 
+	   					       , USEREMAIL	)
+	                  VALUES(    #{userId} 
+	                 		   , #{userPass}
+	                 		   , #{userName}
+	                 		   , #{userEmail})
+    </insert>
+    
+    <!-- 로그인 -->
+	<select id="login" resultType="com.spring.pet.dto.MemberDto">
+		SELECT USERID, USERPASS, USERNAME, USEREMAIL
+		  FROM TB_MEMBER
+		 WHERE USERID = #{userId}
+		   <!-- AND USERPASS = #{userPass}  -->  
+	</select>
+	
+	<!-- 회원정보 수정 -->
+	<update id="memberUpdate">
+		UPDATE TB_MEMBER SET 
+		<!-- USERPASS = #{userPass},  -->
+		USERNAME = #{userName},
+		USEREMAIL = #{userEmail}
+		WHERE USERID = #{userId}
+	</update>
+	
+	<!-- 회원탈퇴 -->
+	<delete id="memberDelete">
+		DELETE FROM TB_MEMBER
+		WHERE USERID = #{userId}
+		 <!--  AND USERPASS = #{userPass}  -->
+	</delete>
+	
+	<!-- 패스워드 체크 -->
+	<select id="passChk" resultType="int">
+		SELECT COUNT(*) FROM TB_MEMBER
+		WHERE USERID = #{userId}
+		  AND USERPASS = #{userPass}
+	</select>
+	
+	<!-- 아이디 중복 체크 -->
+	<select id="idChk" resultType="int">
+		SELECT COUNT(*) FROM TB_MEMBER
+		WHERE USERID = #{userId}
+	</select>
+	
+	<!-- 관리자 페이지(회원목록) -->
+	<select id="list" resultType="com.spring.pet.dto.MemberDto">
+		SELECT * FROM TB_MEMBER WHERE userId NOT IN ('admin') ORDER BY regDate DESC
+	</select>
+	
+	<select id="read" resultType="com.spring.pet.dto.MemberDto">
+		SELECT * FROM TB_MEMBER WHERE userId = #{userId}
+	</select>
+	
+	<!-- 아이디 찾기 -->
+	<select id="findIdByNameAndEmail" resultType="com.spring.pet.dto.MemberDto">
+		SELECT * FROM TB_MEMBER WHERE userName = #{userName} AND userEmail = #{userEmail}
+	</select>
+	
+	<!-- 비밀번호찾기 -->
+	<select id="findPw" resultType="int">
+		SELECT COUNT(*) FROM TB_MEMBER
+		WHERE userName = #{userName} AND userEmail = #{userEmail} AND userId = #{userId}
+	</select>
+	
+	<update id="password_reset">
+		UPDATE TB_MEMBER SET 
+		USERPASS = #{userPass}
+		WHERE USERID = #{userId}
+	</update>
+   
+   
+   
+   
+   
+   
+   
+   
+</mapper>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cart">
+
+	<select id="findCartGoods" resultType="String" parameterType="com.spring.pet.dto.CartDto">
+		select case when count(*) = 0 then 'false' else 'true' end as result from TB_CART
+	    where productId = #{productId}
+	    and userId = #{userId}  
+	</select>
+	
+	<insert id="addGoodsInCart" useGeneratedKeys="true" keyProperty="cartId">
+	    INSERT INTO TB_CART (userId, productId) 
+	    VALUES (#{userId}, #{productId})
+	</insert>
+	
+	<select id="getMyCartProductId" resultType="com.spring.pet.dto.CartDto">
+		SELECT * FROM TB_CART WHERE userId = #{userId} ORDER BY regDate DESC;
+	</select>
+	
+	<select id="getMyCartList" resultType="com.spring.pet.dto.ProductDto">
+		SELECT * FROM TB_PRODUCT WHERE productId IN
+		<foreach collection="list" item="item" open="(" separator="," close=")">
+			#{item.productId}
+		</foreach>
+		ORDER BY regDate DESC
+	</select>
+	
+
+
+</mapper>

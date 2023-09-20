@@ -1,0 +1,65 @@
+@charset "UTF-8";
+
+@import url("https://fonts.googleapis.com/css2?family=Spartan:wght@700&display=swap");
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+@font-face {
+    font-family: 'SBAggroL';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2108@1.1/SBAggroL.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+#page {
+	margin: 0px auto;
+	margin-bottom: 50px;
+	scroll-behavior: smooth;
+}
+
+#header {
+	margin:30px;
+	height:100px;
+	text-align:center;	
+}
+
+#header a {
+	text-decoration:none;
+	color:#232323;
+}
+
+.nav {
+	border-bottom: 1px solid #D0D0D0;
+	border-top:1px solid #D0D0D0;
+	background:white;
+	height:65px;
+	position: sticky;
+	top: 0;
+	z-index:10;
+}
+
+#menu {
+    display: flex;
+    width: 100%;
+    padding: 10px;
+    width: 1000px;
+    margin: 0px auto;
+    justify-content: center;
+    font-family: 'SBAggroL';
+}
+
+#menu span {
+	padding:0px 20px;
+	margin-top:10px;
+}
+
+#menu a {
+	text-decoration: none;
+	font-size: 18px;
+	color: #343434;
+	padding : 16px 0px;
+}
+
+#menu a:hover{
+	border-bottom: 3px solid #000000;
+	transition: border-bottom .2s;
+}
